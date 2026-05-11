@@ -71,7 +71,6 @@ const InvestmentWithdrawFrom = () => {
     if (!cid) return [];
     return (profitAnalytics || []).filter((r) => Number(r.card_id) === cid);
   }, [profitAnalytics, cardId]);
-
   const sumOfCardProfit = useMemo(() => {
     return selectedCardProfitRows.reduce(
       (sum, r) => sum + Number(r.profit_amount || 0),
@@ -161,6 +160,7 @@ const InvestmentWithdrawFrom = () => {
             payable_amount: Number(payableAmount || 0),
             amount: selectedCard?.investment_amount,
             mobile: investor?.mobile,
+             maturity_date: selectedCard?.maturity_date || null,
           }),
         },
       );

@@ -21,6 +21,7 @@ import CashMonthlyReportSlice from "../Redux/Cash/CashMonthlyReportSlice";
 import CashYearlyReportSlice from "../Redux/Cash/CashYearlyReportSlice";
 import MobileAnalyticsSlice from '../Redux/MobileInventory/MobileAnalyticsSlice'
 import SupplierPaymentAnalyticsSlice from '../Redux/SupplierPayment/SupplierPaymentAnalyticsSlice'
+import CashReportSlice from '../Redux/Cash/CashReporSlice'
 const store = configureStore({
   reducer: {
     profitHistory: InvestmentProfitStatusSlice,
@@ -44,7 +45,8 @@ const store = configureStore({
     CashMonthlyReports: CashMonthlyReportSlice,
     CashYearlyReports: CashYearlyReportSlice,
     stockMobiles:MobileAnalyticsSlice,
-    supplierPayments:SupplierPaymentAnalyticsSlice
+    supplierPayments:SupplierPaymentAnalyticsSlice,
+    CashReports:CashReportSlice
   },
 });
 export default store;

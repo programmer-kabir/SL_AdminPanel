@@ -61,6 +61,9 @@ import MonthlyReport from "../components/cash/MonthlyReport";
 import YearlyReport from "../components/cash/YearlyReport";
 import InventoryList from "../Pages/shared/MobileInventory/InventoryList";
 import SupplierPayments from "../Pages/shared/MobileInventory/SupplierPayments";
+import CashIn from "../Pages/shared/CashMenage/CashIn";
+import CashReport from "../Pages/shared/CashMenage/CashReport";
+import CashOut from "../Pages/shared/CashMenage/CashOut";
 
 const routes = createBrowserRouter([
   {
@@ -192,6 +195,18 @@ const routes = createBrowserRouter([
           {
             path: "/cash/cash-menage",
             element: <CashMenage />,
+          },
+          {
+            path: "/cash/cash_in",
+            element: <CashIn />,
+          },
+          {
+            path: "/cash/cash_out",
+            element: <CashOut />,
+          },
+          {
+            path: "/cash/cash_reports",
+            element: <CashReport />,
           },
           {
             path: "/cash/daily_reports",

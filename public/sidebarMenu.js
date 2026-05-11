@@ -51,6 +51,38 @@ export const sidebarMenu = [
     roles: ["admin", "developer", "manager", "staff"],
   },
   {
+  type: "collapse",
+  label: "Cash Management",
+  icon: BsCashStack,
+  roles: ["admin", "developer", "manager", "staff"],
+  children: [
+    {
+      label: "আয় (Cash In)",
+      path: "/cash/cash_in",
+      icon: GiReceiveMoney,
+      roles: ["admin", "developer", "manager", "staff"],
+    },
+    {
+      label: "ব্যয় (Cash Out)",
+      path: "/cash/cash_out",
+      icon: GiPayMoney,
+      roles: ["admin", "developer", "manager", "staff"],
+    },
+    {
+      label: "রিপোর্ট",
+      path: "/cash/cash_reports",
+      icon: TbReport,
+      roles: ["admin", "developer", "manager", "staff"],
+    },
+    {
+      label: "অনুদান",
+      path: "/cash/donations",
+      icon: TbCashBanknote,
+      roles: ["admin", "developer", "manager", "staff"],
+    },
+  ],
+},
+  {
     label: "Cash Management",
     path: "/cash/cash-menage",
     icon: BsCashStack,
