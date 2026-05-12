@@ -224,7 +224,8 @@ const Monthly_Profit_Distributor = () => {
       const cardInst = instWithCard.filter(
         (it) => String(getInstCardId(it)) === String(card.id),
       );
-console.table(
+if ([235, 236, 61].includes(Number(card.id))) {
+  console.table(
     cardInst.map((it) => {
       const days = getActiveDaysInRangeExclusive(
         it.investment_date,
@@ -241,7 +242,7 @@ console.table(
       };
     })
   );
-
+}
       /* 🔥 THIS MONTH DEPOSIT */
       const depositThisMonthRaw = cardInst
         .filter((it) => {

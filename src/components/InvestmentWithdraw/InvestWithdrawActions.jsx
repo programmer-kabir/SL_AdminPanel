@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import useProfitAnalytics from "../../utils/Hooks/useProfitAnalytics";
 // import ''
 export const createWithdrawActions = ({ user, refetch, baseUrl }) => {
   const updateWithdraw = async (payload) => {
@@ -86,9 +87,14 @@ export const createWithdrawActions = ({ user, refetch, baseUrl }) => {
 
   return { handleReject, handlePaid };
 };
+
+
+// const {isProfitAnalyticsLoading,isUProfitAnalyticsError,profitAnalytics} = useProfitAnalytics()
 export const handlePrint = (row) => {
 const today = new Date().toISOString().slice(0, 10);
-
+// const profit = profitAnalytics.filter(ap=>ap.card_id===row.card_id)
+// console.log(profit)
+// console.log(row)
 const isMaturityWithdraw =
   row?.maturity_date &&
   row?.withdraw_date &&
@@ -116,7 +122,10 @@ const isMaturityWithdraw =
     const [y, m, day] = d.split("-");
     return `${bnDigits(day)}-${bnDigits(m)}-${bnDigits(y)}`;
   };
-
+  const profitAmount = Number(row?.total_profit || 0);
+  const mainAmount = Number(row?.amount || 0);
+  const totalAmount = mainAmount + profitAmount;
+console.log(row)
   const safe = (t) =>
     String(t ?? "")
       .replaceAll("&", "&amp;")
@@ -175,6 +184,10 @@ p{ margin: 8px 0; font-size:22px; }            /* ✅ paragraph gap কম */
   text-align:center;
   text-decoration: underline;
   margin-bottom: 12px;
+}
+  .info-block{
+  margin: 6px 0 !important;
+  line-height: 1.4 !important;
 }
 .meta{ display:flex; justify-content: space-between; margin-bottom: 10px;font-size:22px; }
 .to{ margin-bottom: 10px;font-size:22px; }
@@ -245,12 +258,46 @@ p{ margin: 8px 0; font-size:22px; }            /* ✅ paragraph gap কম */
 
       <p>জনাব,</p>
 
-      <p>
-        বিনীত নিবেদন এই যে, আমি <b>${safe(row?.investor_name || "________________")}</b>,
-        আপনার প্রতিষ্ঠানের একজন তালিকাভুক্ত বিনিয়োগকারী।
-        আমার বিনিয়োগকারী আইডি নম্বর: <b>${safe(bnDigits(row?.investor_id || ""))}</b>। </br>
-        আমার মোট বিনিয়োগের পরিমাণ: <b>৳${safe(bnDigits(row?.amount))}</b>।
-      </p>
+
+           <p class="info-block">
+  বিনীত নিবেদন এই যে, আমি
+  <b>${safe(row?.investor_name || "________________")}</b>,
+  আপনার প্রতিষ্ঠানের একজন তালিকাভুক্ত বিনিয়োগকারী।
+  আমার বিনিয়োগকারী আইডি নম্বর:
+  <b>${safe(bnDigits(row?.investor_id || ""))}</b>। 
+
+ আমার কার্ড নম্বর:
+  <b>${safe(bnDigits(row?.card_id || ""))} </b>|
+  ${
+    isMaturityWithdraw
+      ? `
+        <br/>
+        আমার জমাকৃত মূলধনের পরিমাণ:
+        <b>৳${safe(
+          bnDigits(mainAmount.toFixed(2)),
+        )}</b>।
+        <br/>
+
+        অর্জিত লভ্যাংশের পরিমাণ:
+        <b>৳${safe(
+          bnDigits(profitAmount.toFixed(2)),
+        )}</b>।
+        <br/>
+
+        সর্বমোট প্রাপ্য টাকার পরিমাণ: 
+        <b>৳${safe(
+          bnDigits(totalAmount.toFixed(2)),
+        )}</b>।
+      `
+      : `
+        <br/>
+        আমার মোট বিনিয়োগের পরিমাণ:
+        <b>৳${safe(
+          bnDigits(mainAmount.toFixed(2)),
+        )}</b>।
+      `
+  }
+</p>
 ${
   isMaturityWithdraw
     ? `
@@ -284,6 +331,7 @@ ${
         <p>নাম: ${safe(row?.investor_name || "________________")}</p>
         <p>মোবাইল নম্বর: ${safe(bnDigits(row?.mobile || "________________"))}</p>
         <p>বিনিয়োগকারী আইডি: ${safe(bnDigits(row?.investor_id || ""))}</p>
+        <p>কার্ড নং: ${safe(bnDigits(row?.card_id || ""))}</p>
       </div>
 
       <div style="margin-top:8px; font-size:12px; opacity:.75;">
