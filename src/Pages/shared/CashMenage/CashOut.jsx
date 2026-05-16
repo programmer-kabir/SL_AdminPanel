@@ -14,10 +14,18 @@ const CashOut = () => {
   const [selectedYear, setSelectedYear] = React.useState("");
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
+  const [selectedRemark, setSelectedRemark] = React.useState("");
   // only cash out
-  const AllCashOut = Array.isArray(CashReports)
-    ? CashReports.filter((cash) => cash.type === "out")
-    : [];
+const normalCashOut = Array.isArray(CashReports)
+  ? CashReports.filter((cash) => cash.type === "out")
+  : [];
+
+
+const AllCashOut = [...normalCashOut].sort((a, b) => {
+
+  return new Date(b.date) - new Date(a.date);
+
+});
   const currentYear = new Date().getFullYear();
 
 const years = [];
@@ -73,72 +81,115 @@ const FilteredCashOut = AllCashOut.filter((cash) => {
   );
 
   // category totals
-  const salaryTotal = FilteredCashOut
-    .filter((item) => item.category?.trim() === "salary")
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+const salaryTotal = FilteredCashOut
+  .filter(
+    (item) =>
+      item.category?.toLowerCase().trim() === "salary"
+  )
+  .reduce((sum, item) => sum + Number(item.amount), 0);
 
-  const purchaseTotal = FilteredCashOut
-    .filter((item) => item.category?.trim() === "purchase")
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+const purchaseTotal = FilteredCashOut
+  .filter(
+    (item) =>
+      item.category?.toLowerCase().trim() === "purchase"
+  )
+  .reduce((sum, item) => sum + Number(item.amount), 0);
 
-  const rentTotal = FilteredCashOut
-    .filter((item) => item.category?.trim() === "rent")
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+const rentTotal = FilteredCashOut
+  .filter(
+    (item) =>
+      item.category?.toLowerCase().trim() === "rent"
+  )
+  .reduce((sum, item) => sum + Number(item.amount), 0);
 
-  const billTotal = FilteredCashOut
-    .filter((item) => item.category?.trim() === "bill")
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+const billTotal = FilteredCashOut
+  .filter(
+    (item) =>
+      item.category?.toLowerCase().trim() === "bill"
+  )
+  .reduce((sum, item) => sum + Number(item.amount), 0);
 
-  const officeExpenseTotal = FilteredCashOut
-    .filter((item) => item.category?.trim() === "office-expense")
-    .reduce((sum, item) => sum + Number(item.amount), 0);
+const officeExpenseTotal = FilteredCashOut
+  .filter(
+    (item) =>
+      item.category?.toLowerCase().trim() === "office-expense"
+  )
+  .reduce((sum, item) => sum + Number(item.amount), 0);
 
-  const loanRepaymentTotal = FilteredCashOut
+const loanRepaymentTotal = FilteredCashOut
     .filter((item) => item.category?.trim() === "loan-repayment")
     .reduce((sum, item) => sum + Number(item.amount), 0);
 
-  const otherTotal = FilteredCashOut
-    .filter(
-      (item) =>
-        ![
-          "salary",
-          "purchase",
-          "rent",
-          "bill",
-          "office-expense",
-          "loan-repayment",
-        ].includes(item.category)
-    )
-    .reduce((sum, item) => sum + Number(item.amount), 0);
 
+
+const otherTotal = FilteredCashOut
+  .filter(
+    (item) =>
+      ![
+        "salary",
+        "purchase",
+        "rent",
+        "bill",
+        "office-expense",
+        "loan-repayment",
+        "transport",
+        "marketing",
+        "maintenance",
+        "utility",
+        "equipment",
+        "food",
+        "internet",
+      ].includes(item.category)
+  )
+  .reduce((sum, item) => sum + Number(item.amount), 0);
   // category bangla
-  const categoryName = (category) => {
+const categoryName = (category) => {
 
-    switch (category) {
+  switch (category) {
 
-      case "salary":
-        return "বেতন";
+    case "salary":
+      return "বেতন";
 
-      case "purchase":
-        return "কেনাকাটা";
+    case "purchase":
+      return "কেনাকাটা";
 
-      case "rent":
-        return "ভাড়া";
+    case "rent":
+      return "ভাড়া";
 
-      case "bill":
-        return "বিল";
+    case "bill":
+      return "বিল";
 
-      case "office-expense":
-        return "অফিস খরচ";
+    case "office-expense":
+      return "অফিস খরচ";
 
-      case "loan-repayment":
-        return "লোন পরিশোধ";
+    case "loan-repayment":
+      return "লোন পরিশোধ";
 
-      default:
-        return "অন্যান্য";
-    }
-  };
+    case "transport":
+      return "যাতায়াত";
 
+    case "marketing":
+      return "মার্কেটিং";
+
+    case "maintenance":
+      return "রক্ষণাবেক্ষণ";
+
+    case "utility":
+      return "ইউটিলিটি";
+
+    case "equipment":
+      return "যন্ত্রপাতি";
+
+    case "food":
+      return "খাবার";
+
+    case "internet":
+      return "ইন্টারনেট";
+
+    default:
+      return "অন্যান্য";
+  }
+};
   // category style
   const categoryStyle = (category) => {
 
@@ -530,6 +581,9 @@ const FilteredCashOut = AllCashOut.filter((cash) => {
                 <th className="px-5 py-4 text-left">
                   Category
                 </th>
+                <th className="px-5 py-4 text-left">
+                  Remarks
+                </th>
 
                 <th className="px-5 py-4 text-left">
                   Amount
@@ -583,6 +637,46 @@ const FilteredCashOut = AllCashOut.filter((cash) => {
                     </span>
 
                   </td>
+                <td className="px-4 md:py-3 py-2 max-w-[180px]">
+
+  <p
+        onClick={() => setSelectedRemark(cash.remarks)}
+
+    className="truncate text-xs md:text-sm text-gray-300 cursor-pointer"
+  >
+    {cash.remarks}
+  </p>
+{
+  selectedRemark && (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+
+      <div className="bg-[#111827] border border-gray-700 rounded-2xl p-5 w-full max-w-sm shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+
+        <div className="flex items-start justify-between gap-3">
+
+          <h2 className="text-white font-semibold text-lg">
+            Remarks
+          </h2>
+
+          <button
+            onClick={() => setSelectedRemark("")}
+            className="text-gray-400 hover:text-red-400 text-xl leading-none"
+          >
+            ×
+          </button>
+
+        </div>
+
+        <p className="text-sm text-gray-300 mt-4 break-words leading-relaxed">
+          {selectedRemark}
+        </p>
+
+      </div>
+
+    </div>
+  )
+}
+</td>
 
                   <td className="px-4 md:py-3 py-2 whitespace-nowrap text-gray-400">
                     {cash.date}

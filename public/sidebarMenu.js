@@ -42,6 +42,12 @@ export const sidebarMenu = [
     icon: MdOutlineDashboard,
     roles: ["admin", "developer", "manager", "staff"],
   },
+  {
+    label: "ComaC",
+    path: "profit/c_p",
+    icon: MdOutlineDashboard,
+    roles: ["admin", "developer", "manager", "staff"],
+  },
 
   // WORK & ATTENDANCE
   {

@@ -5,6 +5,7 @@ import useUsers from "../../../../utils/Hooks/useUsers";
 import useProfitAnalytics from "../../../../utils/Hooks/useProfitAnalytics";
 import useInvestmentCards from "../../../../utils/Investors/useInvestmentCards";
 import Loader from "../../../../components/Loader/Loader";
+import { useAuth } from "../../../../Provider/AuthProvider";
 
 const money = (n) => `৳ ${Number(n || 0).toLocaleString()}`;
 
@@ -21,7 +22,8 @@ const CardCloseHistory = () => {
     isUProfitAnalyticsError,
     refetch,
   } = useProfitAnalytics();
-
+  const { user, logout } = useAuth();
+console.log(user.role)
   const { investmentCards = [] } = useInvestmentCards();
 
   const rows = Array.isArray(profitAnalytics) ? profitAnalytics : [];
@@ -171,6 +173,54 @@ const [cardIdSearch, setCardIdSearch] = useState("");
     return (
       <div className="p-6 text-red-400">Failed to load Profit Analytics</div>
     );
+  // const handleTransferToCompany = async (
+  //   cardId,
+  //   profit_month,
+  //   profit_year,
+  //   note = "",
+  // ) => {
+  //   const id = Number(cardId);
+  //   const card = cardById.get(id);
+  //   if (!card) return toast.info("Card not found");
+
+  //   setTransferringCardIds((prev) => new Set(prev).add(id));
+
+  //   try {
+  //     const res = await fetch(
+  //       `${
+  //         import.meta.env.VITE_LOCALHOST_KEY
+  //       }/profit_generator/transfer_closed_card_profit_to_company.php`,
+  //       {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         credentials: "include",
+  //         body: JSON.stringify({
+  //           card_id: id,
+  //           investor_id: card.investor_id,
+  //           end_date: card.end_date,
+  //           profit_month,
+  //           profit_year,
+  //           note: String(note || "").trim(),
+  //         }),
+  //       },
+  //     );
+  //     const data = await res.json();
+
+  //     if (!res.ok || !data.success) {
+  //       throw new Error(data.message || "Transfer failed");
+  //     }
+
+  //     toast.success("Your Credit and Profit Amount Transferred");
+  //     refetch();
+  //   } finally {
+  //     setTransferringCardIds((prev) => {
+  //       const next = new Set(prev);
+  //       next.delete(id);
+  //       return next;
+  //     });
+  //   }
+  // };
+  
   const handleTransferToCompany = async (
     cardId,
     profit_month,
@@ -187,7 +237,7 @@ const [cardIdSearch, setCardIdSearch] = useState("");
       const res = await fetch(
         `${
           import.meta.env.VITE_LOCALHOST_KEY
-        }/profit_generator/transfer_closed_card_profit_to_company.php`,
+        }/profit_generator/demo_closed_card_profit.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -199,10 +249,12 @@ const [cardIdSearch, setCardIdSearch] = useState("");
             profit_month,
             profit_year,
             note: String(note || "").trim(),
+            signature_by: user?.role?.[0] || "client",
           }),
         },
       );
       const data = await res.json();
+// console.log(data);
 
       if (!res.ok || !data.success) {
         throw new Error(data.message || "Transfer failed");
@@ -218,6 +270,8 @@ const [cardIdSearch, setCardIdSearch] = useState("");
       });
     }
   };
+  
+  
   const handleConfirmTransfer = async () => {
     const { cardId, month, year } = noteMeta;
     if (!cardId || !month || !year)

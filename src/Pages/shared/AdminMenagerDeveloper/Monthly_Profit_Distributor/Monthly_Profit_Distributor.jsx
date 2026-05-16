@@ -224,7 +224,7 @@ const Monthly_Profit_Distributor = () => {
       const cardInst = instWithCard.filter(
         (it) => String(getInstCardId(it)) === String(card.id),
       );
-if ([235, 236, 61].includes(Number(card.id))) {
+if ([1].includes(Number(card.id))) {
   console.table(
     cardInst.map((it) => {
       const days = getActiveDaysInRangeExclusive(

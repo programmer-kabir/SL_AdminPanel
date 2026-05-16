@@ -157,6 +157,7 @@ const MonthlyInstallmentOverview = () => {
         cardSerial: card ? cardSerialMap[card.card_number] : "-",
         cardNo: card?.card_number || payment.card_id || "-",
         customerName: customer?.name || "Unknown",
+        remarks:card?.remarks,
         phone: customer?.mobile || "-",
         image: customer?.photo || "-",
         userId: customer?.id || "-",
@@ -191,16 +192,29 @@ const MonthlyInstallmentOverview = () => {
   ]);
 
   /* ---------------- FILTERED DATA ---------------- */
-  const filteredReportData = useMemo(() => {
-    return reportData.filter((row) => row.status === "Paid");
-  }, [reportData]);
+const filteredReportData = useMemo(() => {
+  return reportData.filter(
+    (row) =>
+      row.status === "Paid" &&
+      row.remarks?.toLowerCase() !== "daily"
+  );
+}, [reportData]);
   /* ---------------- SUMMARY ---------------- */
   const paid = filteredReportData.filter((r) => r.status === "Paid");
   const unpaid = filteredReportData.filter((r) => r.status === "Unpaid");
 
   const paidAmount = paid.reduce((s, r) => s + r.dueAmount, 0);
-  const unpaidAmount = unpaid.reduce((s, r) => s + r.dueAmount, 0);
+const downPaymentTotal = filteredReportData
+  .filter((item) =>
+    item.installmentNo?.includes("ডাউন")
+  )
+  .reduce((sum, item) => sum + Number(item.dueAmount || 0), 0);
 
+const installmentTotal = filteredReportData
+  .filter((item) =>
+    item.installmentNo?.includes("কিস্তি")
+  )
+  .reduce((sum, item) => sum + Number(item.dueAmount || 0), 0);
   /* ---------------- PAGINATION ---------------- */
   const PAGE_SIZE = 30;
   const [currentPage, setCurrentPage] = useState(1);
@@ -263,7 +277,17 @@ const MonthlyInstallmentOverview = () => {
             Paid Installments: {paid.length} | ৳ {paidAmount}
           </p>
         </div>
+        
       </div>
+      <div className="mt-1 text-sm">
+  <p>
+    Down Payment : ৳ {downPaymentTotal}
+  </p>
+
+  <p>
+    Installment : ৳ {installmentTotal}
+  </p>
+</div>
       {/* FILTER */}
       <div className="flex gap-4 justify-between mb-6 flex-wrap print:hidden">
         <div className="flex items-center gap-5 flex-wrap">
@@ -309,6 +333,8 @@ const MonthlyInstallmentOverview = () => {
               <th className="px-4 py-3 text-left hidden  print:block ">
                 সিরিয়াল
               </th>
+                  <th className="px-4 py-3 text-left">ছবি</th>
+
               <th className="px-4 py-3 text-left">কার্ড নং</th>
               <th className="px-4 py-3 text-left">গ্রাহক</th>
               <th className="px-4 py-3 text-left">ফোন</th>
@@ -326,6 +352,7 @@ const MonthlyInstallmentOverview = () => {
                 পেমেন্ট মেথড
               </th>
               <th className="px-4 py-3 text-left">জমার তারিখ</th>
+              <th className="px-4 py-3 text-left">remarks</th>
             </tr>
           </thead>
 
@@ -348,6 +375,17 @@ const MonthlyInstallmentOverview = () => {
                   <td className="px-4 hidden   print:block border-none">
                     {(currentPage - 1) * PAGE_SIZE + index + 1}
                   </td>
+                  <td className="px-4 py-2">
+ <img
+    src={`https://app.supplylinkbd.com/${row.image}`}
+    alt={row.customerName}
+    className="w-12 h-12 rounded-full object-cover border border-slate-600"
+    onError={(e) => {
+      e.target.src =
+        "https://ui-avatars.com/api/?name=User&background=0D8ABC&color=fff";
+    }}
+  />
+</td>
                   <td
                     title={row.cardNo}
                     className="text-blue-400 font-semibold px-4"
@@ -408,9 +446,47 @@ const MonthlyInstallmentOverview = () => {
                     {row.method}
                   </td>
                   <td className="px-4 capitalize">{row.paid_date}</td>
+                  <td className="px-4 capitalize">{row.remarks}</td>
                 </tr>
               ))
             )}
+            {/* TOTAL ROW */}
+<tr className="bg-slate-800 font-bold border-t border-slate-500">
+  <td className="px-4 py-3 hidden md:table-cell"></td>
+
+  <td className="px-4 py-3"></td>
+
+  <td className="px-4 py-3" colSpan="3">
+    মোট
+  </td>
+
+  <td className="px-4 py-3 text-emerald-400">
+    ৳{" "}
+    {filteredReportData
+      .reduce((sum, item) => sum + Number(item.dueAmount || 0), 0)
+      .toLocaleString()}
+  </td>
+
+  <td className="px-4 py-3 hidden md:table-cell">
+    ৳{" "}
+    {filteredReportData
+      .reduce((sum, item) => sum + Number(item.principal || 0), 0)
+      .toLocaleString()}
+  </td>
+
+  <td className="px-4 py-3 hidden md:table-cell">
+    ৳{" "}
+    {filteredReportData
+      .reduce((sum, item) => sum + Number(item.profit || 0), 0)
+      .toLocaleString()}
+  </td>
+
+  <td className="px-4 py-3 hidden md:table-cell"></td>
+
+  <td className="px-4 py-3 hidden md:table-cell"></td>
+
+  <td className="px-4 py-3"></td>
+</tr>
           </tbody>
         </table>
       </div>

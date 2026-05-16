@@ -64,6 +64,7 @@ import SupplierPayments from "../Pages/shared/MobileInventory/SupplierPayments";
 import CashIn from "../Pages/shared/CashMenage/CashIn";
 import CashReport from "../Pages/shared/CashMenage/CashReport";
 import CashOut from "../Pages/shared/CashMenage/CashOut";
+import CompanyProfit from "../Pages/shared/CompanyProfit/CompanyProfit";
 
 const routes = createBrowserRouter([
   {
@@ -284,6 +285,10 @@ const routes = createBrowserRouter([
               {
                 path: "/applications/all_invest_withdraw",
                 element: <InvestmentWithdraw />,
+              },
+              {
+                path: "/profit/c_p",
+                element: <CompanyProfit />,
               },
             ],
           },

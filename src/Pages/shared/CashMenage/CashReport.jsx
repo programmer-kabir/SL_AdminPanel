@@ -32,7 +32,7 @@ const CashReport = () => {
     isCashReportsError,
     isCashReportsLoading,
   } = useCashReports();
-
+console.log(CashReports)
   // cash out
   const AllCashOut = Array.isArray(CashReports)
     ? CashReports.filter((cash) => cash.type === "out")

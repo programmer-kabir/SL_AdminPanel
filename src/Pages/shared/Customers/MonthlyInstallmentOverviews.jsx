@@ -17,7 +17,6 @@ const safeInt = (v, fallback) => {
 
 const MonthlyInstallmentOverviews = () => {
   const today = new Date();
-
   const saved = useMemo(() => {
     try {
       const raw = localStorage.getItem(LS_KEY);
